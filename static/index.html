@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Comunicação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            overflow: hidden;
+            padding: 40px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input[type="text"], input[type="datetime-local"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+        }
+        .agendamentos {
+            margin-top: 20px;
+        }
+        .agendamento {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agendamento de Comunicação</h1>
+        <form id="agendamentoForm">
+            <input type="datetime-local" id="data_hora" required>
+            <input type="text" id="destinatario" placeholder="Destinatário" required>
+            <textarea id="mensagem" placeholder="Mensagem" required></textarea>
+            <input type="text" id="formato_comunicacao" placeholder="Formato de Comunicação" required>
+            <input type="submit" value="Agendar">
+        </form>
+        <div class="agendamentos" id="agendamentos"></div>
+    </div>
+    <script>
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data_hora = document.getElementById('data_hora').value;
+            const destinatario = document.getElementById('destinatario').value;
+            const mensagem = document.getElementById('mensagem').value;
+            const formato_comunicacao = document.getElementById('formato_comunicacao').value;
+
+            fetch('/agendamentos/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data_hora: data_hora,
+                    destinatario: destinatario,
+                    mensagem: mensagem,
+                    formato_comunicacao: formato_comunicacao
+                })
+            }).then(response => response.json())
+              .then(data => {
+                alert(data.message);
+                carregarAgendamentos();
+              });
+        });
+
+        function carregarAgendamentos() {
+            fetch('/agendamentos/')
+                .then(response => response.json())
+                .then(data => {
+                    const agendamentosDiv = document.getElementById('agendamentos');
+                    agendamentosDiv.innerHTML = '';
+                    data.forEach(id => {
+                        fetch(`/agendamentos/${id}`)
+                            .then(response => response.json())
+                            .then(agendamento => {
+                                const agendamentoDiv = document.createElement('div');
+                                agendamentoDiv.className = 'agendamento';
+                                agendamentoDiv.innerHTML = `
+                                    <p><strong>ID:</strong> ${agendamento.id}</p>
+                                    <p><strong>Data e Hora:</strong> ${agendamento.data_hora}</p>
+                                    <p><strong>Destinatário:</strong> ${agendamento.destinatario}</p>
+                                    <p><strong>Mensagem:</strong> ${agendamento.mensagem}</p>
+                                    <p><strong>Formato de Comunicação:</strong> ${agendamento.formato_comunicacao}</p>
+                                    <p><strong>Status:</strong> ${agendamento.status}</p>
+                                    <button onclick="cancelarAgendamento(${agendamento.id})">Cancelar</button>
+                                `;
+                                agendamentosDiv.appendChild(agendamentoDiv);
+                            });
+                    });
+                });
+        }
+
+        function cancelarAgendamento(id) {
+            fetch(`/agendamentos/${id}`, {
+                method: 'DELETE'
+            }).then(response => response.json())
+              .then(data => {
+                alert(data.message);
+                carregarAgendamentos();
+              });
+        }
+
+        // Carregar agendamentos ao iniciar
+        carregarAgendamentos();
+    </script>
+</body>
+</html>
