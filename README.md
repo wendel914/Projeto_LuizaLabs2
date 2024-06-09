@@ -48,6 +48,12 @@ Esta é uma API para agendamento de envios de comunicação.
 
 ### Instalação e Configuração
 
+### Pré-requisitos
+
+- Python 3.8+
+- Docker 26.1.4+
+- Docker Compose 1.29.2+
+
 - Para executar este projeto localmente, siga estas etapas:
 
 - 1. Clone o repositório:
