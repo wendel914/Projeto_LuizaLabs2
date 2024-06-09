@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    image: python:3.9-slim
+    ports:
+      - "5000:5000"
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql://root:root@mysql/dbluiza
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dbluiza
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
