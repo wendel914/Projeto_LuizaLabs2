@@ -83,8 +83,31 @@ Agora, você pode iniciar o servidor Flask executando:
   http://localhost:5000.
 
 
+## Utilização do Docker Compose
 
+Este projeto utiliza Docker Compose para facilitar a configuração do ambiente de desenvolvimento. Com o Docker Compose, você pode iniciar facilmente todos os serviços necessários para executar o projeto localmente.
 
+### Pré-requisitos
+
+- Docker: [Instalação do Docker](https://docs.docker.com/get-docker/)
+- Docker Compose: [Instalação do Docker Compose](https://docs.docker.com/compose/install/)
+
+### Como usar
+
+1. Certifique-se de que o Docker e o Docker Compose estão instalados em sua máquina.
+2. No terminal, navegue até o diretório do projeto.
+3. Execute o seguinte comando para iniciar os serviços definidos no arquivo docker-compose.yml:
+
+   ```bash
+   docker-compose up -d
+
+- Isso iniciará os serviços em segundo plano (modo detached).
+
+4. Para parar e remover os serviços, execute o seguinte comando:
+   ```bash
+   docker-compose down
+
+- Isso encerrará e removerá os contêineres definidos no arquivo docker-compose.yml.
 
 
 
